@@ -1,7 +1,10 @@
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from dotenv import load_dotenv
 import argparse
+
+load_dotenv()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--person_1", default = "Benjamin Franklin")
@@ -9,14 +12,10 @@ parser.add_argument("--person_2", default = "Thomas Jefferson")
 parser.add_argument("--topic", default = "democracy")
 args = parser.parse_args()
 
-
-# Secure this key
-api_key = "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"
-
-llm = OpenAI(openai_api_key=api_key)
+llm = OpenAI()
 
 code_prompt = PromptTemplate(
-    template="Write a very short script of an argument between {person_1} and {person_2} about {topic}",
+    template="Write a very short script of an argument between {person_1} and {person_2} about {topic}.",
     input_variables=["person_1", "person_2", "topic"],
 )
 
