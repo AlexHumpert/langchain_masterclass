@@ -1,6 +1,6 @@
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain.chains import LLMChain, SequentialChain
 from dotenv import load_dotenv
 import argparse
 
@@ -19,15 +19,48 @@ code_prompt = PromptTemplate(
     input_variables=["person_1", "person_2", "topic"],
 )
 
+summary_prompt = PromptTemplate(
+    template = "Summarize the {script}.",
+    input_variables = ["script"]
+)
+
 code_chain = LLMChain(
     llm=llm, 
-    prompt=code_prompt
+    prompt=code_prompt,
+    output_key = "script"
     )
 
-result = code_chain({
+summary_chain = LLMChain(
+    llm = llm,
+    prompt = summary_prompt,
+    output_key = "summary"
+)
+
+chain = SequentialChain(
+    chains = [code_chain, summary_chain],
+    input_variables = ["person_1", "person_2", "topic"],
+    output_variables = ["script", "summary"]
+)
+
+
+result = chain({
     "person_1": args.person_1,
     "person_2": args.person_2,
     "topic" : args.topic
     })
 
-print(result["text"])
+
+print(">>>> PERSON 1")
+print(result["person_1"])
+
+print(">>>> PERSON 2")
+print(result["person_2"])
+
+print(">>>> TOPIC")
+print(result["topic"])
+
+print(">>>> SCRIPT")
+print(result["script"])
+
+print(">>>> SUMMARY")
+print(result["summary"])
