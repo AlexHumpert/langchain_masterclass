@@ -7,48 +7,60 @@ import argparse
 load_dotenv()
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--task", default = "return a list of numbers")
-parser.add_argument("--language", default = "python")
+parser.add_argument("--person_1", default = "Benjamin Franklin")
+parser.add_argument("--person_2", default = "Thomas Jefferson")
+parser.add_argument("--topic", default = "democracy")
 args = parser.parse_args()
-
 
 llm = OpenAI()
 
 code_prompt = PromptTemplate(
-    template="Write a very short {language} function that will {task}.",
-    input_variables=["language", "task"],
+    template="Write a very short script of an argument between {person_1} and {person_2} about {topic}.",
+    input_variables=["person_1", "person_2", "topic"],
 )
 
-test_prompt = PromptTemplate(
-    template = "Write a {language} test for the following {code}",
-    input_variables = ["language", "code"]
+summary_prompt = PromptTemplate(
+    template = "Summarize the {script}.",
+    input_variables = ["script"]
 )
 
 code_chain = LLMChain(
     llm=llm, 
     prompt=code_prompt,
-    output_key = "code"
+    output_key = "script"
     )
 
-test_chain = LLMChain(
-    llm = llm, 
-    prompt = test_prompt,
-    output_key = "test"
+summary_chain = LLMChain(
+    llm = llm,
+    prompt = summary_prompt,
+    output_key = "summary"
 )
 
 chain = SequentialChain(
-    chains = [code_chain, test_chain],
-    input_variables = ["task", "language"],
-    output_variables = ["test", "code"]
+    chains = [code_chain, summary_chain],
+    input_variables = ["person_1", "person_2", "topic"],
+    output_variables = ["script", "summary"]
 )
 
+
 result = chain({
-    "language" : args.language,
-    "task" : args.task,
+    "person_1": args.person_1,
+    "person_2": args.person_2,
+    "topic" : args.topic
     })
 
-print(">>>>> GENERATED CODE:")
-print(result["code"])
 
-print(">>>>> GENERATED TEST:")
-print(result["test"])
+print(">>>> PERSON 1")
+print(result["person_1"])
+
+print(">>>> PERSON 2")
+print(result["person_2"])
+
+print(">>>> TOPIC")
+print(result["topic"])
+
+print(">>>> SCRIPT")
+print(result["script"])
+
+print(">>>> SUMMARY")
+print(result["summary"])
