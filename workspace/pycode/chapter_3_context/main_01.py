@@ -1,10 +1,10 @@
-from langchain.document_loaders import TextLoader
+from langchain.document_loaders import TextLoader, CSVLoader
 from langchain.text_splitter import CharacterTextSplitter
 from dotenv import load_dotenv
 
 load_dotenv()
 
-loader = TextLoader("facts.txt")
+loader = CSVLoader("global_university_ranks.csv")
 
 splitter = CharacterTextSplitter(
     separator = "\n",
