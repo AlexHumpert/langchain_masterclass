@@ -1,4 +1,4 @@
-from langchain.document_loaders import TextLoader, CSVLoader, GitHubIssuesLoader
+from langchain_community.document_loaders import TextLoader, CSVLoader, GitHubIssuesLoader
 from langchain.text_splitter import CharacterTextSplitter
 from dotenv import load_dotenv
 
@@ -6,8 +6,8 @@ load_dotenv()
 
 loader = GitHubIssuesLoader(
     repo = "AlexHumpert/langchain_masterclass",
-    creator = "AlexHumpert"
-
+    creator = "AlexHumpert",
+    state = "all"
 )
 
 splitter = CharacterTextSplitter(
@@ -18,4 +18,6 @@ splitter = CharacterTextSplitter(
 
 docs = loader.load()
 
-print(docs)
+print(docs[0].page_content)
+
+
