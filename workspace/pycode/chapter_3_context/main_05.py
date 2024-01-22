@@ -20,9 +20,9 @@ docs = loader.load_and_split(
     text_splitter = text_splitter
 )
 
-
+# creates chroma instance and calculates embeddings for all docs
 db = Chroma.from_documents(
-    docs, # creates chroma instance and calculates embeddings for all docs
+    docs, 
     embedding = embeddings,
     persist_directory = "emb" # persists embeddings in SQLite directory on computer
 )
