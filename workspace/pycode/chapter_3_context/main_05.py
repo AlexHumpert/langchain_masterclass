@@ -1,8 +1,8 @@
 from langchain.document_loaders import TextLoader, CSVLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
-from dotenv import load_dotenv
 from langchain.vectorstores import Chroma
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -20,15 +20,14 @@ docs = loader.load_and_split(
     text_splitter = text_splitter
 )
 
-
+# creates chroma instance and calculates embeddings for all docs
 db = Chroma.from_documents(
-    docs, # creates chroma instance and calc embeddings for all docs
+    docs, 
     embedding = embeddings,
     persist_directory = "emb" # persists embeddings in SQLite directory on computer
-
 )
 
-results = db.similarity_search(
+results = db.similarity_search( #Prompt is called to the db instance
     "What is an interesting fact about the English language",
     #k = 1 # Number of results you get back
     )
